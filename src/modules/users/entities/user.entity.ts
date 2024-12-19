@@ -1,8 +1,9 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Column, Entity, OneToMany, Unique } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, Unique } from 'typeorm';
 
 import { RefreshToken } from '@/modules/auth/entities/refresh-token.entity';
+import { Role } from '@/modules/roles/entities/role.entity';
 
 import { AbstractEntityWithUUID } from '../../../common/abstracts/entity.abstract';
 
@@ -47,4 +48,12 @@ export class User extends AbstractEntityWithUUID {
   @ApiHideProperty()
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens!: RefreshToken[];
+
+  @ManyToMany(() => Role, (role) => role.users, { eager: true })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' }
+  })
+  roles: Role[];
 }

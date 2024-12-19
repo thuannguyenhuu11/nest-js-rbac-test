@@ -1,16 +1,18 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import fs from 'fs';
 import path from 'path';
 
+import { RolesGuard } from '@/common/guards/roles.guard';
 import { RequestWithUser } from '@/common/types/index.e';
 
 import { GetUserResponseDto } from './dto/user-response.dto';
 import { User } from './entities/user.entity';
 @ApiTags('Users')
 @Controller('users')
+@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly configService: ConfigService) {}
 
